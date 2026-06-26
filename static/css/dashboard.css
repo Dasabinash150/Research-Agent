@@ -1,0 +1,154 @@
+/* ════════════════════════════════════════════════════════════════════
+   dashboard.css — layout and component styles for the research dashboard
+   Bootstrap 5 handles grid/utilities; this file owns sidebar + panels.
+════════════════════════════════════════════════════════════════════ */
+
+/* ── Root / tokens ────────────────────────────────────────────────── */
+:root {
+  --sidebar-width:      240px;
+  --sidebar-bg:         #0d1117;
+  --sidebar-text:       rgba(255,255,255,.75);
+  --sidebar-hover:      rgba(59,130,246,.15);
+  --sidebar-active-bg:  rgba(59,130,246,.20);
+  --sidebar-active-txt: #60a5fa;
+  --panel-bg:           #f7f8fa;
+  --accent:             #3b82f6;
+}
+
+/* ── Wrapper ──────────────────────────────────────────────────────── */
+#dashboard-wrapper {
+  min-height: calc(100vh - 56px); /* subtract navbar */
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-width);
+  min-height: 100%;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  position: sticky;
+  top: 56px;                       /* pin below navbar */
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  flex-shrink: 0;
+  transition: width .2s ease;
+  z-index: 100;
+}
+
+.sidebar-brand { color: rgba(255,255,255,.9) !important; }
+.sidebar-divider { border-color: rgba(255,255,255,.1); }
+
+.sidebar-link {
+  color: var(--sidebar-text) !important;
+  border-radius: .5rem;
+  font-size: .875rem;
+  transition: background .15s, color .15s;
+}
+.sidebar-link:hover   { background: var(--sidebar-hover); color: #fff !important; }
+.sidebar-link.active  {
+  background: var(--sidebar-active-bg) !important;
+  color: var(--sidebar-active-txt) !important;
+  font-weight: 600;
+}
+
+.status-dot { width: 8px; height: 8px; display: inline-block; }
+.sidebar-footer { font-size: .75rem; opacity: .7; }
+
+/* ── Main content ─────────────────────────────────────────────────── */
+#main-content {
+  background: var(--panel-bg);
+  min-height: calc(100vh - 56px);
+}
+
+/* ── Stat cards ───────────────────────────────────────────────────── */
+.stat-card {
+  border-radius: 1rem;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.08) !important; }
+
+.stat-icon {
+  width: 48px; height: 48px;
+  border-radius: .75rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* ── Section cards ────────────────────────────────────────────────── */
+.card { border-radius: 1rem; }
+
+/* ── Chat ─────────────────────────────────────────────────────────── */
+.chat-card { height: calc(100vh - 160px); border-radius: 1rem; }
+
+.chat-messages { background: #f7f8fa; }
+
+.chat-bubble {
+  max-width: 80%;
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  font-size: .875rem;
+}
+.chat-bubble.user {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+}
+.chat-bubble.assistant strong { color: var(--accent); }
+.chat-bubble.user strong { color: rgba(255,255,255,.85); }
+
+/* ── Upload drop zone ─────────────────────────────────────────────── */
+.upload-dropzone {
+  border: 2px dashed #cbd5e1 !important;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.upload-dropzone.drag-over,
+.upload-dropzone:hover {
+  border-color: var(--accent) !important;
+  background: rgba(59,130,246,.04);
+}
+.border-dashed { border-style: dashed !important; }
+
+/* ── Section output boxes ─────────────────────────────────────────── */
+.result-section {
+  background: #fff;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 .5rem .5rem 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: .75rem;
+  font-size: .875rem;
+  white-space: pre-wrap;
+}
+.result-section h6 { color: var(--accent); font-weight: 700; margin-bottom: .5rem; }
+
+/* ── Entity badge list ────────────────────────────────────────────── */
+.entity-badge {
+  display: inline-block;
+  background: rgba(59,130,246,.1);
+  color: #1d4ed8;
+  border-radius: .375rem;
+  padding: .25rem .6rem;
+  font-size: .78rem;
+  margin: .2rem;
+  font-weight: 500;
+}
+
+/* ── Spinner overlay ──────────────────────────────────────────────── */
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  color: #6b7280;
+  font-size: .875rem;
+  padding: 1.5rem 0;
+}
+
+/* ── Mobile sidebar toggle ────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+  #sidebar { position: fixed; left: -260px; height: 100vh; top: 0; }
+  #sidebar.open { left: 0; }
+}

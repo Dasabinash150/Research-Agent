@@ -1,0 +1,401 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Research Agent{% endblock %}
+
+{% block extra_head %}
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="d-flex" id="dashboard-wrapper">
+
+  <!-- ══════════════════════════  SIDEBAR  ══════════════════════════ -->
+  <nav id="sidebar" class="sidebar d-flex flex-column flex-shrink-0 p-3">
+
+    <!-- Brand -->
+    <a href="{{ url_for('main.index') }}"
+       class="d-flex align-items-center gap-2 mb-4 text-decoration-none sidebar-brand">
+      <i class="bi bi-journals fs-4"></i>
+      <span class="fw-bold fs-5">Research<span class="text-primary">Agent</span></span>
+    </a>
+
+    <hr class="sidebar-divider" />
+
+    <!-- Navigation -->
+    <ul class="nav nav-pills flex-column gap-1 mb-auto" id="sidebarNav">
+      <li class="nav-item">
+        <a class="nav-link sidebar-link active" href="#" data-panel="panel-overview">
+          <i class="bi bi-speedometer2 me-2"></i>Overview
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-upload">
+          <i class="bi bi-cloud-upload me-2"></i>Upload PDF
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-chat">
+          <i class="bi bi-chat-dots me-2"></i>AI Chat
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-literature">
+          <i class="bi bi-book me-2"></i>Literature Review
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-citation">
+          <i class="bi bi-bookmarks me-2"></i>Citation Analysis
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-trend">
+          <i class="bi bi-graph-up-arrow me-2"></i>Trend Analysis
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-knowledge">
+          <i class="bi bi-diagram-3 me-2"></i>Knowledge Graph
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-insight">
+          <i class="bi bi-lightbulb me-2"></i>Research Gaps
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sidebar-link" href="#" data-panel="panel-report">
+          <i class="bi bi-download me-2"></i>Download Report
+        </a>
+      </li>
+    </ul>
+
+    <hr class="sidebar-divider" />
+
+    <!-- Sidebar footer -->
+    <div class="sidebar-footer small text-muted">
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <span class="status-dot bg-success rounded-circle"></span>
+        <span id="sidebar-model-id">IBM Granite</span>
+      </div>
+      <div>
+        <i class="bi bi-database me-1"></i>
+        <span id="sidebar-vectors">0</span> vectors indexed
+      </div>
+    </div>
+  </nav>
+  <!-- ════════════════════════════════════════════════════════════════ -->
+
+  <!-- ═══════════════════════  MAIN CONTENT  ════════════════════════ -->
+  <div id="main-content" class="flex-grow-1 p-4 overflow-auto">
+
+    <!-- ── Topbar ──────────────────────────────────────────────────── -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle">
+        <i class="bi bi-list fs-5"></i>
+      </button>
+      <h4 class="mb-0 fw-bold" id="panel-title">Overview</h4>
+      <div class="d-flex gap-2">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2">
+          <i class="bi bi-stars me-1"></i>IBM Granite
+        </span>
+      </div>
+    </div>
+
+    <!-- ── Panels (only one visible at a time) ────────────────────── -->
+
+    <!-- OVERVIEW ───────────────────────────────────────────────────── -->
+    <div class="panel" id="panel-overview">
+      <!-- Stat cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card card border-0 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="text-muted small mb-1">Vectors Indexed</p>
+                <h3 class="fw-bold mb-0" id="stat-vectors">0</h3>
+              </div>
+              <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-database"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card card border-0 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="text-muted small mb-1">PDFs Uploaded</p>
+                <h3 class="fw-bold mb-0" id="stat-pdfs">0</h3>
+              </div>
+              <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-file-earmark-pdf"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card card border-0 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="text-muted small mb-1">Agents Ready</p>
+                <h3 class="fw-bold mb-0">5</h3>
+              </div>
+              <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-robot"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card card border-0 shadow-sm p-4">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="text-muted small mb-1">Model</p>
+                <h6 class="fw-bold mb-0 small" id="stat-model">IBM Granite</h6>
+              </div>
+              <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-cpu"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-sm p-4">
+            <h6 class="fw-semibold mb-3">Agent Pipeline</h6>
+            <div id="chart-pipeline" style="height:280px;"></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card border-0 shadow-sm p-4">
+            <h6 class="fw-semibold mb-3">Entity Distribution</h6>
+            <div id="chart-entities" style="height:280px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sources list -->
+      <div class="card border-0 shadow-sm p-4 mt-3">
+        <h6 class="fw-semibold mb-3">Indexed Sources</h6>
+        <ul class="list-group list-group-flush" id="sources-list">
+          <li class="list-group-item text-muted small">No PDFs uploaded yet.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- UPLOAD PDF ─────────────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-upload">
+      <div class="card border-0 shadow-sm p-4" style="max-width:640px;">
+        <h5 class="fw-bold mb-1">Upload Research PDF</h5>
+        <p class="text-muted small mb-4">
+          The document will be parsed, chunked, and indexed into the FAISS
+          vector store for RAG-powered queries.
+        </p>
+
+        <!-- Drop zone -->
+        <div class="upload-dropzone mb-3 p-5 text-center rounded-3 border border-dashed"
+             id="dropZone">
+          <i class="bi bi-cloud-upload fs-1 text-muted mb-2 d-block"></i>
+          <p class="mb-1 fw-semibold">Drag &amp; drop a PDF here</p>
+          <p class="text-muted small mb-3">or click to browse</p>
+          <input type="file" id="pdfFileInput" class="d-none" accept=".pdf" />
+          <button class="btn btn-outline-primary btn-sm px-4"
+                  onclick="document.getElementById('pdfFileInput').click()">
+            Browse File
+          </button>
+        </div>
+
+        <!-- Selected file info -->
+        <div id="fileInfo" class="d-none alert alert-secondary py-2 small mb-3"></div>
+
+        <button class="btn btn-primary px-4" id="uploadBtn" disabled>
+          <i class="bi bi-upload me-2"></i>Upload &amp; Index
+        </button>
+
+        <!-- Result -->
+        <div id="uploadResult" class="mt-3"></div>
+      </div>
+    </div>
+
+    <!-- AI CHAT ────────────────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-chat">
+      <div class="card border-0 shadow-sm d-flex flex-column chat-card">
+        <div class="card-header bg-white border-bottom py-3 px-4">
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-chat-dots text-primary me-2"></i>AI Research Chat
+          </h6>
+        </div>
+        <!-- Messages -->
+        <div class="chat-messages flex-grow-1 p-4 overflow-auto" id="chatMessages">
+          <div class="chat-bubble assistant">
+            <strong>ResearchAgent</strong>
+            <p class="mb-0 mt-1">
+              Hello! I'm your AI research assistant powered by IBM Granite.
+              Upload a PDF and ask me anything about your research topic.
+            </p>
+          </div>
+        </div>
+        <!-- Input -->
+        <div class="card-footer bg-white border-top p-3">
+          <div class="input-group">
+            <input type="text" id="chatInput" class="form-control border-0 bg-light"
+                   placeholder="Ask a research question…" />
+            <button class="btn btn-primary px-4" id="chatSendBtn">
+              <i class="bi bi-send"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LITERATURE REVIEW ──────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-literature">
+      <div class="card border-0 shadow-sm p-4">
+        <h5 class="fw-bold mb-1">Literature Review</h5>
+        <p class="text-muted small mb-4">
+          Generate a structured 6-section literature review using IBM Granite.
+        </p>
+        <div class="input-group mb-3" style="max-width:600px;">
+          <input type="text" id="literatureQuery"
+                 class="form-control" placeholder="e.g. Transformer models in NLP" />
+          <button class="btn btn-primary px-4" id="literatureBtn">
+            <i class="bi bi-play-fill me-1"></i>Generate
+          </button>
+        </div>
+        <div id="literatureResult"></div>
+      </div>
+    </div>
+
+    <!-- CITATION ANALYSIS ──────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-citation">
+      <div class="card border-0 shadow-sm p-4">
+        <h5 class="fw-bold mb-1">Citation Analysis</h5>
+        <p class="text-muted small mb-4">
+          Identify key references, missing citations, and influential papers.
+        </p>
+        <div class="input-group mb-3" style="max-width:600px;">
+          <input type="text" id="citationQuery"
+                 class="form-control" placeholder="e.g. Deep learning for medical imaging" />
+          <button class="btn btn-primary px-4" id="citationBtn">
+            <i class="bi bi-play-fill me-1"></i>Analyse
+          </button>
+        </div>
+        <div id="citationResult"></div>
+      </div>
+    </div>
+
+    <!-- TREND ANALYSIS ─────────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-trend">
+      <div class="card border-0 shadow-sm p-4">
+        <h5 class="fw-bold mb-1">Trend Analysis</h5>
+        <p class="text-muted small mb-4">
+          Predict emerging topics, future directions, and research opportunities.
+        </p>
+        <div class="input-group mb-3" style="max-width:600px;">
+          <input type="text" id="trendQuery"
+                 class="form-control" placeholder="e.g. Large language models in education" />
+          <button class="btn btn-primary px-4" id="trendBtn">
+            <i class="bi bi-play-fill me-1"></i>Predict
+          </button>
+        </div>
+        <div id="trendChartWrap" class="mb-3 d-none">
+          <div id="chart-trend" style="height:320px;"></div>
+        </div>
+        <div id="trendResult"></div>
+      </div>
+    </div>
+
+    <!-- KNOWLEDGE GRAPH ────────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-knowledge">
+      <div class="card border-0 shadow-sm p-4">
+        <h5 class="fw-bold mb-1">Knowledge Graph</h5>
+        <p class="text-muted small mb-4">
+          Extract authors, institutions, concepts, methods, keywords, and datasets.
+        </p>
+        <div class="input-group mb-3" style="max-width:600px;">
+          <input type="text" id="knowledgeQuery"
+                 class="form-control" placeholder="e.g. Attention is All You Need" />
+          <button class="btn btn-primary px-4" id="knowledgeBtn">
+            <i class="bi bi-play-fill me-1"></i>Extract
+          </button>
+        </div>
+        <!-- Entity chart -->
+        <div id="kgChartWrap" class="mb-3 d-none">
+          <div id="chart-kg" style="height:300px;"></div>
+        </div>
+        <!-- Entity tables -->
+        <div id="knowledgeResult"></div>
+      </div>
+    </div>
+
+    <!-- RESEARCH GAPS (INSIGHT) ────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-insight">
+      <div class="card border-0 shadow-sm p-4">
+        <h5 class="fw-bold mb-1">Research Gaps &amp; Insights</h5>
+        <p class="text-muted small mb-4">
+          Discover research gaps, novel ideas, future work, and practical recommendations.
+        </p>
+        <div class="input-group mb-3" style="max-width:600px;">
+          <input type="text" id="insightQuery"
+                 class="form-control" placeholder="e.g. Federated learning for privacy" />
+          <button class="btn btn-primary px-4" id="insightBtn">
+            <i class="bi bi-play-fill me-1"></i>Generate
+          </button>
+        </div>
+        <div id="insightResult"></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD REPORT ────────────────────────────────────────────── -->
+    <div class="panel d-none" id="panel-report">
+      <div class="card border-0 shadow-sm p-4" style="max-width:640px;">
+        <h5 class="fw-bold mb-1">Download Report</h5>
+        <p class="text-muted small mb-4">
+          Run the full 5-agent pipeline and download a comprehensive research report.
+        </p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Research Topic</label>
+          <input type="text" id="reportQuery" class="form-control"
+                 placeholder="e.g. Quantum machine learning" />
+        </div>
+        <button class="btn btn-primary px-4" id="reportBtn">
+          <i class="bi bi-play-fill me-2"></i>Run Full Pipeline
+        </button>
+
+        <!-- Pipeline progress -->
+        <div id="reportProgress" class="d-none mt-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <div class="spinner-border spinner-border-sm text-primary"></div>
+            <span class="small text-muted" id="reportProgressText">Running pipeline…</span>
+          </div>
+          <div class="progress" style="height:6px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                 id="reportProgressBar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Download button (hidden until pipeline finishes) -->
+        <div id="reportDownloadWrap" class="d-none mt-4">
+          <div class="alert alert-success py-2 small mb-3">
+            Pipeline complete! Your report is ready.
+          </div>
+          <button class="btn btn-success px-4" id="reportDownloadBtn">
+            <i class="bi bi-download me-2"></i>Download Report (.txt)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /dashboard-wrapper -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

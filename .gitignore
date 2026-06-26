@@ -1,0 +1,110 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Research Agent — .gitignore
+# Python / Flask / IBM watsonx.ai project
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+MANIFEST
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+.env.bak
+
+# ── Environment variables / secrets ──────────────────────────────────────────
+# Never commit real credentials
+.env
+.env.*
+!.env.example
+
+# ── Uploaded files (user data — can be large and sensitive) ──────────────────
+uploads/*
+!uploads/.gitkeep
+
+# ── Vector database (auto-generated, can be large) ───────────────────────────
+vector_db/*
+!vector_db/.gitkeep
+
+# ── Generated reports ────────────────────────────────────────────────────────
+reports/*
+!reports/.gitkeep
+
+# ── Application logs ─────────────────────────────────────────────────────────
+logs/*
+!logs/.gitkeep
+*.log
+*.log.*
+
+# ── Flask / instance folder ──────────────────────────────────────────────────
+instance/
+.webassets-cache
+
+# ── Testing & coverage ───────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+nosetests.xml
+test-results/
+
+# ── Type checkers ────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ── IDEs & editors ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ── Operating system ─────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Jupyter Notebooks ────────────────────────────────────────────────────────
+.ipynb_checkpoints
+*.ipynb
+
+# ── Compiled / packaging ──────────────────────────────────────────────────────
+pip-log.txt
+*.mo
+*.pot

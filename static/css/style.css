@@ -1,0 +1,98 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Research Agent — custom stylesheet
+   All layout is handled by Bootstrap 5; this file provides only
+   project-specific overrides and component styles.
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Root palette ──────────────────────────────────────────────────── */
+:root {
+  --ra-hero-bg: #0d1117;
+  --ra-cta-bg:  #0d1117;
+  --ra-accent:  #3b82f6;   /* matches Bootstrap primary override below */
+}
+
+/* ── Bootstrap primary colour override ────────────────────────────── */
+.btn-primary,
+.bg-primary { background-color: var(--ra-accent) !important; }
+.btn-primary { border-color: var(--ra-accent) !important; }
+.btn-primary:hover { background-color: #2563eb !important; border-color: #2563eb !important; }
+.text-primary { color: var(--ra-accent) !important; }
+.border-primary { border-color: var(--ra-accent) !important; }
+.badge.bg-primary { background-color: var(--ra-accent) !important; }
+
+/* ── Global ────────────────────────────────────────────────────────── */
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  background-color: #ffffff;
+  color: #1f2328;
+}
+
+/* ── Hero section ──────────────────────────────────────────────────── */
+.hero-section {
+  background-color: var(--ra-hero-bg);
+  min-height: 88vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle grid overlay */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* ── Feature cards ─────────────────────────────────────────────────── */
+.feature-card {
+  border-radius: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.09) !important;
+}
+
+.feature-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 0.75rem;
+  background: rgba(59,130,246,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── CTA section ───────────────────────────────────────────────────── */
+.cta-section {
+  background-color: var(--ra-cta-bg);
+}
+
+/* ── Spacing utility (py-6) ────────────────────────────────────────── */
+.py-6 { padding-top: 5rem; padding-bottom: 5rem; }
+
+/* ── Navbar ────────────────────────────────────────────────────────── */
+.navbar-dark .nav-link { color: rgba(255,255,255,.72); }
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link.active { color: #ffffff; }
+
+/* ── Footer ────────────────────────────────────────────────────────── */
+.footer-link {
+  color: rgba(255,255,255,.55);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.footer-link:hover { color: #ffffff; }
+
+.social-icon { transition: color 0.15s ease; }
+.social-icon:hover { color: var(--ra-accent) !important; }
+
+/* ── Scrollbar (Webkit) ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
